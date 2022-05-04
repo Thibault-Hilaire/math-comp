@@ -23,7 +23,7 @@ with builtins; with (import <nixpkgs> {}).lib;
 
   ## select an entry to build in the following `bundles` set
   ## defaults to "default"
-  default-bundle = "coq-8.14";
+  default-bundle = "coq-8.15";
 
   ## write one `bundles.name` attribute set per
   ## alternative configuration, the can be used to
@@ -34,14 +34,19 @@ with builtins; with (import <nixpkgs> {}).lib;
 
   bundles = let
     master = [
-      "mathcomp-finmap" "mathcomp-bigenough"
-      "mathcomp-abel" "multinomials" "mathcomp-real-closed" "coqeal"
-      "fourcolor" "odd-order" "gaia" "deriving" "mathcomp-zify"
-      "extructures" "mathcomp-classical" "mathcomp-analysis" "reglang"
-      "graph-theory" "coquelicot"
+      "mathcomp-bigenough"
+      "deriving"
+      "extructures" "mathcomp-classical" "mathcomp-analysis"
+    ];
+    hierarchy-builder = [
+      "mathcomp-finmap" "mathcomp-real-closed" "multinomials" "coqeal"
+      "odd-order" "mathcomp-zify" "coquelicot" "interval"
+      "reglang" "mathcomp-abel" "fourcolor" "gaia" "graph-theory" "coq-bits"
     ];
     common-bundles = listToAttrs (forEach master (p:
       { name = p; value.override.version = "master"; }))
+    // listToAttrs (forEach hierarchy-builder (p:
+      { name = p; value.override.version = "hierarchy-builder"; }))
     // { mathcomp-ssreflect.main-job = true;
          mathcomp-doc.job = true;
        };
