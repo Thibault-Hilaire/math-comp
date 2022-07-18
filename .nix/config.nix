@@ -56,7 +56,9 @@ with builtins; with (import <nixpkgs> {}).lib;
       bignums.override.version = "master";
       paramcoq.override.version = "master";
       coq-elpi.override.version = "coq-master";
-      hierarchy-builder.override.version = "coq-master";
+      hierarchy-builder.override.version = "master";
+      # hierarchy-builder.override.version = "coq-master";
+      interval.job = false;
     };
     "coq-8.17".coqPackages = common-bundles // {
       coq.override.version = "8.17";
@@ -67,19 +69,12 @@ with builtins; with (import <nixpkgs> {}).lib;
     };
     "coq-8.16".coqPackages = common-bundles // {
       coq.override.version = "8.16";
+      hierarchy-builder.override.version = "fun_instances";
+      interval.job = false;
     };
     "coq-8.15".coqPackages = common-bundles // {
       coq.override.version = "8.15";
-      hierarchy-builder.override.version = "context-section";
-    };
-    "coq-8.14".coqPackages = common-bundles // {
-      coq.override.version = "8.14";
-    };
-    "coq-8.13".coqPackages = common-bundles // {
-      coq.override.version = "8.13";
-      mathcomp-classical.job = false;
-      mathcomp-analysis.job = false;
-      graph-theory.job = false;
+      hierarchy-builder.override.version = "master";
     };
   };
 }
