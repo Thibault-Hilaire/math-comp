@@ -671,7 +671,6 @@ jobs:
     - mathcomp-finmap
     - mathcomp-fingroup
     - fourcolor
-    - hierarchy-builder
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
@@ -730,9 +729,12 @@ jobs:
       name: Building/fetching current CI target
       run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
         --argstr job "graph-theory"
-  hierarchy-builder:
+  interval:
     needs:
     - coq
+    - coquelicot
+    - mathcomp-ssreflect
+    - mathcomp-fingroup
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
@@ -758,27 +760,42 @@ jobs:
         extraPullNames: coq, coq-community
         name: math-comp
     - id: stepCheck
-      name: Checking presence of CI target hierarchy-builder
+      name: Checking presence of CI target interval
       run: "nb_dry_run=$(NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link \\\n   --argstr\
-        \ bundle \"coq-8.16\" --argstr job \"hierarchy-builder\" \\\n   --dry-run\
-        \ 2>&1 > /dev/null)\necho $nb_dry_run\necho ::set-output name=status::$(echo\
-        \ $nb_dry_run | grep \"built:\" | sed \"s/.*/built/\")\n"
+        \ bundle \"coq-8.16\" --argstr job \"interval\" \\\n   --dry-run 2>&1 > /dev/null)\n\
+        echo $nb_dry_run\necho ::set-output name=status::$(echo $nb_dry_run | grep\
+        \ \"built:\" | sed \"s/.*/built/\")\n"
     - if: steps.stepCheck.outputs.status == 'built'
       name: 'Building/fetching previous CI target: coq'
       run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
         --argstr job "coq"
     - if: steps.stepCheck.outputs.status == 'built'
-      name: 'Building/fetching previous CI target: coq-elpi'
+      name: 'Building/fetching previous CI target: bignums'
       run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
-        --argstr job "coq-elpi"
+        --argstr job "bignums"
+    - if: steps.stepCheck.outputs.status == 'built'
+      name: 'Building/fetching previous CI target: coquelicot'
+      run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
+        --argstr job "coquelicot"
+    - if: steps.stepCheck.outputs.status == 'built'
+      name: 'Building/fetching previous CI target: flocq'
+      run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
+        --argstr job "flocq"
+    - if: steps.stepCheck.outputs.status == 'built'
+      name: 'Building/fetching previous CI target: mathcomp-ssreflect'
+      run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
+        --argstr job "mathcomp-ssreflect"
+    - if: steps.stepCheck.outputs.status == 'built'
+      name: 'Building/fetching previous CI target: mathcomp-fingroup'
+      run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
+        --argstr job "mathcomp-fingroup"
     - if: steps.stepCheck.outputs.status == 'built'
       name: Building/fetching current CI target
       run: NIXPKGS_ALLOW_UNFREE=1 nix-build --no-out-link --argstr bundle "coq-8.16"
-        --argstr job "hierarchy-builder"
+        --argstr job "interval"
   mathcomp:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     - mathcomp-fingroup
     - mathcomp-algebra
@@ -909,7 +926,6 @@ jobs:
   mathcomp-algebra:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     - mathcomp-fingroup
     runs-on: ubuntu-latest
@@ -972,7 +988,6 @@ jobs:
     - mathcomp-classical
     - mathcomp-field
     - mathcomp-bigenough
-    - hierarchy-builder
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
@@ -1076,7 +1091,6 @@ jobs:
   mathcomp-character:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     - mathcomp-fingroup
     - mathcomp-algebra
@@ -1153,8 +1167,6 @@ jobs:
     - coq
     - mathcomp-algebra
     - mathcomp-finmap
-    - hierarchy-builder
-    - hierarchy-builder
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
@@ -1212,7 +1224,6 @@ jobs:
   mathcomp-doc:
     needs:
     - coq
-    - hierarchy-builder
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
@@ -1262,7 +1273,6 @@ jobs:
   mathcomp-field:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     - mathcomp-fingroup
     - mathcomp-algebra
@@ -1332,7 +1342,6 @@ jobs:
   mathcomp-fingroup:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     runs-on: ubuntu-latest
     steps:
@@ -1540,7 +1549,6 @@ jobs:
   mathcomp-solvable:
     needs:
     - coq
-    - hierarchy-builder
     - mathcomp-ssreflect
     - mathcomp-fingroup
     - mathcomp-algebra
@@ -1605,7 +1613,6 @@ jobs:
   mathcomp-ssreflect:
     needs:
     - coq
-    - hierarchy-builder
     runs-on: ubuntu-latest
     steps:
     - name: Determine which commit to test
