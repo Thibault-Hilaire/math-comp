@@ -116,8 +116,6 @@ HB.structure Definition Lmodule (R : ringType) :=
 Module LmoduleExports.
 Notation "[ 'finLmodType' R 'of' T ]" := (Lmodule.clone R T%type _)
   (at level 0, format "[ 'finLmodType'  R  'of'  T ]") : form_scope.
-(* FIXME: add to HB or define directly type instead of type_ *)
-(* Identity Coercion lmodtype_id : Lmodule.type >-> Lmodule.type_. *)
 End LmoduleExports.
 HB.export LmoduleExports.
 
@@ -128,8 +126,6 @@ HB.structure Definition Lalgebra (R : ringType) :=
 Module LalgebraExports.
 Notation "[ 'finLalgType' R 'of' T ]" := (Lalgebra.clone R T%type _)
   (at level 0, format "[ 'finLalgType'  R  'of'  T ]") : form_scope.
-(* FIXME: add to HB or define directly type instead of type_ *)
-(* Identity Coercion lalgtype_id : Lalgebra.type >-> Lalgebra.type_. *)
 End LalgebraExports.
 HB.export LalgebraExports.
 
@@ -140,8 +136,6 @@ HB.structure Definition Algebra (R : ringType) :=
 Module AlgebraExports.
 Notation "[ 'finAlgType' R 'of' T ]" := (Algebra.clone R T%type _)
   (at level 0, format "[ 'finAlgType'  R  'of'  T ]") : form_scope.
-(* FIXME: add to HB or define directly type instead of type_ *)
-(* Identity Coercion algtype_id : Algebra.type >-> Algebra.type_. *)
 End AlgebraExports.
 HB.export AlgebraExports.
 
@@ -152,8 +146,6 @@ HB.structure Definition UnitAlgebra (R : unitRingType) :=
 Module UnitAlgebraExports.
 Notation "[ 'finUnitAlgType' R 'of' T ]" := (UnitAlgebra.clone R T%type _)
   (at level 0, format "[ 'finUnitAlgType'  R  'of'  T ]") : form_scope.
-(* FIXME: add to HB or define directly type instead of type_ *)
-(* Identity Coercion unit_algtype_id : UnitAlgebra.type >-> UnitAlgebra.type_. *)
 End UnitAlgebraExports.
 HB.export UnitAlgebraExports.
 
