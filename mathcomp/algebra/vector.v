@@ -1077,7 +1077,7 @@ have lin_f: linear f.
   move=> k u v; rewrite scaler_sumr -big_split; apply: eq_bigr => i _.
   by rewrite /= scalerA -scalerDl linearP.
 pose flM := GRing.linear_isLinear.Build _ _ _ _ f lin_f.
-pose fL : GRing.Linear.type _ _ := HB.pack f flM.
+pose fL : GRing.Linear.type _ _ _ _ := HB.pack f flM.
 exists fL => freeX eq_szX.
 apply/esym/(@eq_from_nth _ 0); rewrite ?size_map eq_szX // => i ltiX.
 rewrite (nth_map 0) //= /f (bigD1 (Ordinal ltiX)) //=.
@@ -1960,7 +1960,7 @@ have r2pK : cancel r2p p2r by move=> w; rewrite /p2r !r2vK hsubmxK.
 have p2rK : cancel p2r r2p by case=> u v; rewrite /r2p row_mxKl row_mxKr !v2rK.
 have r2p_lin: linear r2p by move=> a u v; congr (_ , _); rewrite /= !linearP.
 pose r2plM := GRing.linear_isLinear.Build _ _ _ _ r2p r2p_lin.
-pose r2pL : GRing.Linear.type _ _ := HB.pack r2p r2plM.
+pose r2pL : GRing.Linear.type _ _ _ _ := HB.pack r2p r2plM.
 by exists p2r; [apply: (@can2_linear _ _ _ r2pL) | exists r2p].
 Qed.
 HB.instance Definition _ := Lmodule_hasFinDim.Build _ (vT1 * vT2)%type
@@ -2008,7 +2008,7 @@ Lemma vsolve_eqP (U : {vspace vT}) :
 Proof.
 have lhsZ: linear lhsf by move=> a u v; apply/ffunP=> i; rewrite !ffunE linearP.
 pose lhslM := GRing.linear_isLinear.Build _ _ _ _ lhsf lhsZ.
-pose lhsL : GRing.Linear.type _ _ := HB.pack lhsf lhslM.
+pose lhsL : GRing.Linear.type _ _ _ _ := HB.pack lhsf lhslM.
 apply: (iffP memv_imgP) => [] [u Uu sol_u]; exists u => //.
   by move=> i; rewrite -[tnth rhs i]ffunE sol_u (lfunE lhsL) ffunE.
 by apply/ffunP=> i; rewrite (lfunE lhsL) !ffunE sol_u.

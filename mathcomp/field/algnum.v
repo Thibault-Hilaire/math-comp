@@ -229,7 +229,7 @@ pose nu0mM := GRing.isMultiplicative.Build Qn Qn nu0 nu0m.
 pose nu0RM : GRing.RMorphism.type _ _ := HB.pack nu0 nu0aM nu0mM.
 pose nu0lM :=
   GRing.isLinear.Build [ringType of rat] Qn Qn *:%R nu0 (fmorph_numZ nu0RM).
-pose nu0LRM : GRing.LRMorphism.type _ _ := HB.pack nu0 nu0aM nu0mM nu0lM.
+pose nu0LRM : GRing.LRMorphism.type _ _ _ _ := HB.pack nu0 nu0aM nu0mM nu0lM.
 by exists nu0LRM.
 Qed.
 
@@ -368,7 +368,7 @@ have Sinj_poly Qr (QrC : numF_inj Qr) p:
 - rewrite -map_poly_comp; apply: eq_map_poly => a.
   by rewrite /= SinjZ rmorph1 mulr1.
 have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
-  & exists2 in01 : {lrmorphism _}, Sinj mu0 =1 Sinj mu1 \o in01
+  & exists2 in01 : {lrmorphism _ -> _}, Sinj mu0 =1 Sinj mu1 \o in01
   & {morph in01: y / Saut mu0 y >-> Saut mu1 y}}.
 - pose b0 := vbasis {:Sdom mu0}.
   have [z _ /sig_eqW[[|px ps] // [Dx Ds]]] := algC_PET (x :: map (Sinj mu0) b0).
@@ -379,7 +379,8 @@ have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
   have [Qr [QrC [rr Drr genQr]]] := num_field_exists r.
   have{rz} [zz Dz]: {zz | QrC zz = z}.
     by move: rz; rewrite -Drr => /mapP/sig2_eqW[zz]; exists zz.
-  have{ps Ds} [in01 Din01]: {in01 : {lrmorphism _} | Sinj mu0 =1 QrC \o in01}.
+  have{ps Ds} [in01 Din01]:
+      {in01 : {lrmorphism _ -> _} | Sinj mu0 =1 QrC \o in01}.
     have in01P y: {yy | Sinj mu0 y = QrC yy}.
       exists (\sum_i coord b0 i y *: (map_poly (in_alg Qr) ps`_i).[zz]).
       rewrite {1}(coord_vbasis (memvf y)) !rmorph_sum; apply: eq_bigr => i _.
@@ -398,7 +399,7 @@ have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
     pose in01aM := GRing.isAdditive.Build _ _ in01 in01a.
     pose in01mM := GRing.isMultiplicative.Build _ _ in01 in01m.
     pose in01lM := GRing.isLinear.Build _ _  _ _ in01 in01l.
-    pose in01LRM : GRing.LRMorphism.type _ _ := HB.pack in01
+    pose in01LRM : GRing.LRMorphism.type _ _ _ _ := HB.pack in01
       in01aM in01mM in01lM.
     by exists in01LRM.
   have {z zz Dz px} Dx: exists xx, x = QrC xx.
@@ -433,15 +434,15 @@ have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
     by rewrite rmorphB /= map_polyX map_polyC.
   have [f1 aut_f1 Df1]:= kHom_extends (sub1v (ASpace algK)) hom_f Qpr splitQr.
   pose f1mM := GRing.isMultiplicative.Build _ _ f1 (kHom_lrmorphism aut_f1).
-  pose nu : GRing.LRMorphism.type _ _ := HB.pack (fun_of_lfun f1) f1mM.
+  pose nu : GRing.LRMorphism.type _ _ _ _ := HB.pack (fun_of_lfun f1) f1mM.
   exists (SubAut Qr QrC nu) => //; exists in01 => //= y.
   by rewrite -Df -Df1 //; apply/memK; exists y.
 have phiZ: scalable phi.
   move=> a y; do 2!rewrite -mulr_algl -in_algE.
   by rewrite -[a]divq_num_den !(fmorph_div, rmorphM, rmorph_int).
 pose philM := GRing.isLinear.Build _ _ _ _ phi phiZ.
-pose phiLRM : GRing.LRMorphism.type _ _ := HB.pack (GRing.RMorphism.sort phi)
-  philM.
+pose phiLRM : GRing.LRMorphism.type _ _ _ _ :=
+  HB.pack (GRing.RMorphism.sort phi) philM.
 pose fix ext n :=
   if n is i.+1 then oapp (fun x => s2val (ext1 (ext i) x)) (ext i) (unpickle i)
   else SubAut Qs QsC phiLRM.
