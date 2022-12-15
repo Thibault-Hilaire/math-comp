@@ -337,7 +337,7 @@ have QtoQ z x: x \in sQ z -> {Qxz : 'AHom(Q x, Q z) | morph_ofQ x z Qxz}.
   have QxzaM := GRing.isAdditive.Build _ _ _ Qxza.
   have QxzmM := GRing.isMultiplicative.Build _ _ _ Qxzm.
   have QxzlM := GRing.isLinear.Build _ _ _ _ _ (rat_linear Qxza).
-  pose QxzLRM : GRing.LRMorphism.type _ _ := HB.pack Qxz QxzaM QxzmM QxzlM.
+  pose QxzLRM : GRing.LRMorphism.type _ _ _ _ := HB.pack Qxz QxzaM QxzmM QxzlM.
   by exists (linfun_ahom QxzLRM) => u; rewrite lfunE QxzE.
 pose sQs z s := all (mem (sQ z)) s.
 have inQsK z s: sQs z s -> map (ofQ z) (map (inQ z) s) = s.
@@ -359,7 +359,7 @@ have{gen PET2 genP} PET s: {z | sQs z s & <<1 & map (inQ z) s>>%VS = fullv}.
   rewrite -[map _ _](mapK (ofQ_K y)) -(map_comp (ofQ y)) (eq_map QzyE) inQsK //.
   by rewrite -defQs -(canLR (ofQ_K y) Dz) -QzyE ofQ_K.
 pose rp s := \prod_(z <- s) ('X - z%:P).
-have map_rp (f : {rmorphism _}) s: rp _ s ^ f = rp _ (map f s).
+have map_rp (f : {rmorphism _ -> _}) s: rp _ s ^ f = rp _ (map f s).
   rewrite rmorph_prod /rp big_map; apply: eq_bigr => x _.
   by rewrite rmorphB /= map_polyX map_polyC.
 pose is_Gal z := SplittingField.axiom (Q z).

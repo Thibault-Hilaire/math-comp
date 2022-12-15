@@ -731,6 +731,25 @@ Reserved Notation "a \o* f" (at level 40).
 Reserved Notation "a \*: f" (at level 40).
 Reserved Notation "f \* g" (at level 40, left associativity).
 
+Reserved Notation "'{' 'additive' U '->' V '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'additive'  U  ->  V }").
+Reserved Notation "'{' 'rmorphism' U '->' V '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'rmorphism'  U  ->  V }").
+Reserved Notation "'{' 'lrmorphism' U '->' V '|' s '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'lrmorphism'  U  ->  V  |  s }").
+Reserved Notation "'{' 'lrmorphism' U '->' V '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'lrmorphism'  U  ->  V }").
+Reserved Notation "'{' 'linear' U '->' V '|' s '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'linear'  U  ->  V  |  s }").
+Reserved Notation "'{' 'linear' U '->' V '}'"
+  (at level 0, U at level 98, V at level 99,
+   format "{ 'linear'  U  ->  V }").
+
 Declare Scope ring_scope.
 Delimit Scope ring_scope with R.
 Declare Scope term_scope.
@@ -1797,16 +1816,17 @@ HB.mixin Record isAdditive (U V : zmodType) (apply : U -> V) := {
   additive_subproof : additive apply;
 }.
 
-#[mathcomp(axiom="additive")]
+#[infer(U,V),mathcomp(axiom="additive")]
 HB.structure Definition Additive (U V : zmodType) := {f of isAdditive U V f}.
 
 Module AdditiveExports.
 Module Additive.
-Definition map (U V : zmodType) (phUV : phant (U -> V)) := Additive.type U V.
-Definition apply (U V : zmodType) (phUV : phant (U -> V)) := @Additive.sort U V.
+Definition apply_deprecated (U V : zmodType) (phUV : phant (U -> V)) :=
+  @Additive.sort U V.
+#[deprecated(since="mathcomp 2.0", note="Use Additive.sort instead.")]
+Notation apply := apply_deprecated.
 End Additive.
-Notation "{ 'additive' fUV }" := (Additive.map (Phant fUV%type))
-  (at level 0, format "{ 'additive'  fUV }") : type_scope.
+Notation "{ 'additive' U -> V }" := (Additive.type U%type V%type) : type_scope.
 Notation "[ 'additive' 'of' f 'as' g ]" := (Additive.clone _ _ f%function g)
   (at level 0, format "[ 'additive'  'of'  f  'as'  g ]") : form_scope.
 Notation "[ 'additive' 'of' f ]" := (Additive.clone _ _ f%function _)
@@ -2002,6 +2022,7 @@ HB.mixin Record isMultiplicative (R S : ringType) (f : R -> S) := {
   rmorphism_subproof : multiplicative f
 }.
 
+#[infer(R,S)]
 HB.structure Definition RMorphism (R S : ringType) :=
   {f of @Additive R S f & isMultiplicative R S f}.
 (* FIXME: Additive has very strange implicit arguments
@@ -2009,11 +2030,13 @@ HB.structure Definition RMorphism (R S : ringType) :=
 
 Module RMorphismExports.
 Module RMorphism.
-Definition map (R S : ringType) (phRS : phant (R -> S)) := RMorphism.type R S.
-Definition apply (R S : ringType) (phRS : phant (R -> S)) := @RMorphism.sort R S.
+Definition apply_deprecated (R S : ringType) (phRS : phant (R -> S)) :=
+  @RMorphism.sort R S.
+#[deprecated(since="mathcomp 2.0", note="Use RMorphism.sort instead.")]
+Notation apply := apply_deprecated.
 End RMorphism.
-Notation "{ 'rmorphism' fRS }" := (RMorphism.map (Phant fRS%type))
-  (at level 0, format "{ 'rmorphism'  fRS }") : type_scope.
+Notation "{ 'rmorphism' U -> V }" := (RMorphism.type U%type V%type)
+  : type_scope.
 Notation "[ 'rmorphism' 'of' f 'as' g ]" := (RMorphism.clone _ _ f%function g)
   (at level 0, format "[ 'rmorphism'  'of'  f  'as'  g ]") : form_scope.
 Notation "[ 'rmorphism' 'of' f ]" := (RMorphism.clone _ _ f%function _)
@@ -2170,6 +2193,7 @@ HB.mixin Record isLinear (R : ringType) (U : lmodType R) (V : zmodType)
   linear_subproof : scalable_for s f;
 }.
 
+#[infer(R,U,V)]
 HB.structure Definition Linear (R : ringType) (U : lmodType R) (V : zmodType)
     (s : R -> V -> V) :=
   {f of @Additive U V f & isLinear R U V s f}.
@@ -2207,10 +2231,11 @@ Notation scalar f := (linear_for *%R f).
 Module Linear.
 Section Linear.
 Variables (R : ringType) (U : lmodType R) (V : zmodType) (s : R -> V -> V).
-Definition map (phUV : phant (U -> V)) := Linear.type U s.
-Definition apply (phUV : phant (U -> V)) := @Linear.sort R U V s.
+Definition apply_deprecated (phUV : phant (U -> V)) := @Linear.sort R U V s.
+#[deprecated(since="mathcomp 2.0", note="Use Linear.sort instead.")]
+Notation apply := apply_deprecated.
 (* Support for right-to-left rewriting with the generic linearZ rule. *)
-Local Notation mapUV := (Linear.type U s).
+Local Notation mapUV := (Linear.type R U V s).
 Definition map_class := mapUV.
 Definition map_at (a : R) := mapUV.
 Structure map_for a s_a := MapFor {map_for_map : mapUV; _ : s a = s_a}.
@@ -2219,17 +2244,18 @@ Structure wrapped := Wrap {unwrap : mapUV}.
 Definition wrap (f : map_class) := Wrap f.
 End Linear.
 End Linear.
-Notation "{ 'linear' fUV | s }" := (Linear.map s (Phant fUV))
-  (at level 0, format "{ 'linear'  fUV  |  s }") : type_scope.
-Notation "{ 'linear' fUV }" := {linear fUV | *:%R}
-  (at level 0, format "{ 'linear'  fUV }") : type_scope.
+Notation "{ 'linear' U -> V | s }" := (@Linear.type _ U%type V%type s)
+  : type_scope.
+Notation "{ 'linear' U -> V }" := {linear U%type -> V%type | *:%R}
+  : type_scope.
 Notation "{ 'scalar' U }" := {linear U -> _ | *%R}
-                               (at level 0, format "{ 'scalar'  U }") : type_scope.
+  (at level 0, format "{ 'scalar'  U }") : type_scope.
 Notation "[ 'linear' 'of' f 'as' g ]" := (Linear.clone _ _ _ _ f%function g)
   (at level 0, format "[ 'linear'  'of'  f  'as'  g ]") : form_scope.
 Notation "[ 'linear' 'of' f ]" := (Linear.clone _ _ _ _ f%function _)
   (at level 0, format "[ 'linear'  'of'  f ]") : form_scope.
 (* Support for right-to-left rewriting with the generic linearZ rule. *)
+Identity Coercion lineratype_id : Linear.type >-> Linear.type_.
 Coercion Linear.map_for_map : Linear.map_for >-> Linear.type.
 Coercion Linear.unify_map_at : Linear.map_at >-> Linear.map_for.
 Canonical Linear.unify_map_at.
@@ -2396,6 +2422,7 @@ End LinearLalg.
 
 End LinearTheory.
 
+#[infer(R,A,B)]
 HB.structure Definition LRMorphism (R : ringType) (A : lalgType R) (B : ringType)
     (s : R -> B -> B) :=
   {f of @RMorphism A B f & isLinear R A B s f}.
@@ -2403,15 +2430,15 @@ HB.structure Definition LRMorphism (R : ringType) (A : lalgType R) (B : ringType
 
 Module LRMorphismExports.
 Module LRMorphism.
-Definition map (R : ringType) (A : lalgType R) (B : ringType) (s : R -> B -> B)
-  (phAB : phant (A -> B)) := LRMorphism.type A s.
-Definition apply (R : ringType) (A : lalgType R) (B : ringType) (s : R -> B -> B)
-  (phAB : phant (A -> B)) := @LRMorphism.sort R A B s.
+Definition apply_deprecated (R : ringType) (A : lalgType R) (B : ringType)
+  (s : R -> B -> B) (phAB : phant (A -> B)) := @LRMorphism.sort R A B s.
+#[deprecated(since="mathcomp 2.0", note="Use LRMorphism.sort instead.")]
+Notation apply := apply_deprecated.
 End LRMorphism.
-Notation "{ 'lrmorphism' fAB | s }" := (LRMorphism.map s (Phant fAB%type))
-  (at level 0, format "{ 'lrmorphism'  fAB  |  s }") : type_scope.
-Notation "{ 'lrmorphism' fAB }" := {lrmorphism fAB%type | *:%R}
-  (at level 0, format "{ 'lrmorphism'  fAB }") : type_scope.
+Notation "{ 'lrmorphism' A -> B | s }" := (@LRMorphism.type _ A%type B%type s)
+  : type_scope.
+Notation "{ 'lrmorphism' A -> B }" := {lrmorphism A%type -> B%type | *:%R}
+  : type_scope.
 Notation "[ 'lrmorphism' 'of' f ]" := (LRMorphism.clone _ _ _ _ f%function _)
   (at level 0, format "[ 'lrmorphism'  'of'  f ]") : form_scope.
 End LRMorphismExports.

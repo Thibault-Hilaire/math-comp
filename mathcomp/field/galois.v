@@ -545,7 +545,8 @@ have{irr_q} [Lz [inLz [z qz0]]]: {Lz : fieldExtType F &
     move=> a u v; rewrite -(@mulr_algl F Lz) baseField_scaleE.
     by rewrite -{1}mulr_algl rmorphD rmorphM -lock.
   pose inLzLlM := GRing.linear_isLinear.Build _ _ _ _ _ inLzL_linear.
-  pose inLzLL : GRing.Linear.type _ _ := HB.pack (locked inLz : _ -> _) inLzLlM.
+  pose inLzLL : GRing.Linear.type _ _ _ _ :=
+    HB.pack (locked inLz : _ -> _) inLzLlM.
   have ihLzZ: ahom_in {:L} (linfun inLzLL).
     by apply/ahom_inP; split=> [u v|]; rewrite !lfunE (rmorphM, rmorph1).
   exists Lz, (AHom ihLzZ), z; congr (root _ z): qz0.

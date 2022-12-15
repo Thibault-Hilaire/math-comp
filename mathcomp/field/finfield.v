@@ -401,7 +401,7 @@ have fZ: scalable f.
 pose faM := GRing.isAdditive.Build _ _ f fA.
 pose fmM := GRing.isMultiplicative.Build _ _ f fM.
 pose flM := GRing.isLinear.Build _ _ _ _ f fZ.
-pose fLRM : GRing.LRMorphism.type _ _ := HB.pack f faM fmM flM.
+pose fLRM : GRing.LRMorphism.type _ _ _ _ := HB.pack f faM fmM flM.
 have /kAut_to_gal[alpha galLalpha Dalpha]: kAut 1 {:L} (linfun fLRM).
   rewrite kAutfE; apply/kHomP; split=> [x y _ _ | x /idfP]; rewrite !lfunE //=.
   exact: (rmorphM fLRM).
@@ -480,7 +480,8 @@ Local Notation "p ^%:A" := (map_poly_extField _ p)
 Lemma FinSplittingFieldFor (F : finFieldType) (p : {poly F}) :
   p != 0 -> {L : splittingFieldType F | splittingFieldFor 1 p^%:A {:L}}.
 Proof.
-have mapXsubC (f : {rmorphism _}) x: map_poly f ('X - x%:P) = 'X - (f x)%:P.
+have mapXsubC (f : {rmorphism _ -> _}) x:
+    map_poly f ('X - x%:P) = 'X - (f x)%:P.
   by rewrite rmorphB /= map_polyX map_polyC.
 move=> nz_p; pose splits q := {zs | q %= \prod_(z <- zs) ('X - z%:P)}.
 suffices [L splitLp]: {L : fieldExtType F | splittingFieldFor 1 p^%:A {:L}}.
