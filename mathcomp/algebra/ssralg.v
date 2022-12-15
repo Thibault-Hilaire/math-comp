@@ -1744,7 +1744,7 @@ Section LalgebraTheory.
 Variables (R : ringType) (A : lalgType R).
 Implicit Types x y : A.
 
-HB.instance Definition _ := Ring.copy R^o R.
+HB.instance Definition _ := Ring.on R^o.
 
 HB.instance Definition _ := @Zmodule_isLmodule.Build R R^o
   (@mul R) (@mulrA R) (@mul1r R) (@mulrDr R) (fun v a b => mulrDl a b v).
@@ -2607,7 +2607,7 @@ HB.instance Definition converse_ : Ring_hasCommutativeMul R^c :=
   Ring_hasCommutativeMul.Build R^c (fun _ _ => mulrC _ _).
 #[export]
 HB.instance Definition regular_comRingType : Ring_hasCommutativeMul R^o :=
-  Ring_hasCommutativeMul.Build R^o mulrC.
+  ComRing.on R^o.
 #[export]
 HB.instance Definition regular_comAlgType : is_ComAlgebra R R^o :=
   is_ComAlgebra.Build R R^o.
@@ -2878,8 +2878,7 @@ Implicit Types x y : R.
 HB.instance Definition xxx1 : Ring_hasMulInverse R^c :=
   Ring_hasMulInverse.Build R^c (@mulrV R) (@mulVr R) (@rev_unitrP R) (@invr_out R).
 HB.instance Definition xxx2 : Ring_hasMulInverse R^o :=
-  Ring_hasMulInverse.Build R^o (@mulVr R) (@mulrV R)
-    (@unitrP_subproof R) (@invr_out R).
+  UnitRing.on R^o.
 End UnitRingTheory.
 End RegularConverseUnitRingExports.
 HB.export RegularConverseUnitRingExports.
@@ -3898,9 +3897,8 @@ End IntegralDomainTheory.
 Module RegularIdomainExports.
 Section IntegralDomainTheory.
 Variable R : idomainType.
-(* TODO: HB.instance Definition _ : ComUnitRing_isIntegral R^o := alias R. *)
 HB.instance Definition regular_integral : ComUnitRing_isIntegral R^o :=
-  ComUnitRing_isIntegral.Build (R^o) mulf_eq0_subproof.
+  IntegralDomain.on R^o.
 End IntegralDomainTheory.
 End RegularIdomainExports.
 HB.export RegularIdomainExports.
@@ -3925,8 +3923,7 @@ Notation "[ 'fieldType' 'of' T ]" := (Field.clone T%type _)
 End FieldExports.
 HB.export FieldExports.
 
-#[export] HB.instance Definition regular_field (F : fieldType) :=
-  UnitRing_isField.Build F^o fieldP.
+#[export] HB.instance Definition regular_field (F : fieldType) := Field.on F^o.
 
 Lemma IdomainMixin (R : unitRingType): Field.axiom R -> IntegralDomain.axiom R.
 Proof.
