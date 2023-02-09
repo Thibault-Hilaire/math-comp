@@ -150,9 +150,13 @@ rewrite memv_cap memv0 memv_ker => /andP[Ev]; apply: contraLR => nz_v.
 by rewrite -unitfE unitrE -(kHom_inv homKf) // -fM ?rpredV ?divff ?idKf ?mem1v.
 Qed.
 
+Lemma kHom_is_semi_additive K E f :
+  kHom K E f -> semi_additive (f \o vsval : subvs_of E -> L).
+Proof. case/kHomP => fM idKf; split; [exact: raddf0 | exact: raddfD]. Qed.
+
 Lemma kHom_is_additive K E f :
-  kHom K E f -> additive (f \o vsval : subvs_of E -> L).
-Proof. case/kHomP=> fM idKf a b; exact: raddfB. Qed.
+  kHom K E f -> {morph (f \o vsval : subvs_of E -> L) : x / - x }.
+Proof. case/kHomP => fM idKf; exact: raddfN. Qed.
 
 Lemma kHom_is_multiplicative K E f :
   kHom K E f -> multiplicative (f \o vsval : subvs_of E -> L).
@@ -164,7 +168,8 @@ Qed.
 Definition kHom_rmorphism K E f homKEf :=
   GRing.RMorphism.Pack
     (GRing.RMorphism.Class
-       (GRing.isAdditive.Build _ _ _ (@kHom_is_additive K E f homKEf))
+       (GRing.isSemiAdditive.Build _ _ _ (@kHom_is_semi_additive K E f homKEf))
+       (GRing.SemiAdditive_isAdditive.Build _ _ _ (@kHom_is_additive K E f homKEf))
        (GRing.isMultiplicative.Build _ _ _
           (@kHom_is_multiplicative K E f homKEf))).
 
@@ -194,9 +199,13 @@ Section kHomExtend.
 
 Variables (K E : {subfield L}) (f : 'End(L)) (x y : L).
 
-Fact kHomExtend_additive_subproof :
-  additive (fun z => (map_poly f (Fadjoin_poly E x z)).[y]).
-Proof. by move=> a b; rewrite !raddfB hornerD hornerN. Qed.
+Fact kHomExtend_semi_additive_subproof :
+  semi_additive (fun z => (map_poly f (Fadjoin_poly E x z)).[y]).
+Proof. by split=> [|a b]; rewrite ?raddf0 ?horner0// !raddfD hornerD. Qed.
+
+Fact kHomExtend_opp_subproof :
+  {morph (fun z => (map_poly f (Fadjoin_poly E x z)).[y]) : x / - x}.
+Proof. by move=> a; rewrite !raddfN hornerN. Qed.
 
 Fact kHomExtend_scalable_subproof :
   scalable (fun z => (map_poly f (Fadjoin_poly E x z)).[y]).
@@ -210,7 +219,8 @@ Definition kHomExtend :=
   linfun
     (GRing.Linear.Pack
        (GRing.Linear.Class
-          (GRing.isAdditive.Build _ _ _ kHomExtend_additive_subproof)
+          (GRing.isSemiAdditive.Build _ _ _ kHomExtend_semi_additive_subproof)
+          (GRing.SemiAdditive_isAdditive.Build _ _ _ kHomExtend_opp_subproof)
           (GRing.isLinear.Build _ _ _ _ _ kHomExtend_scalable_subproof))).
 
 Lemma kHomExtendE z : kHomExtend z = (map_poly f (Fadjoin_poly E x z)).[y].
