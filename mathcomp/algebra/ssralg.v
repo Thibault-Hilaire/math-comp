@@ -2611,9 +2611,8 @@ Notation "[ 'algType' R 'of' T ]" := [algType R of T%type for _]
 End AlgExports.
 HB.export AlgExports.
 
-(* FIXME: bad naming *)
-HB.factory Record is_ComAlgebra R V of ComRing V & Lalgebra R V := {}.
-HB.builders Context (R : ringType) V of is_ComAlgebra R V.
+HB.factory Record Lalgebra_isComAlgebra R V of ComRing V & Lalgebra R V := {}.
+HB.builders Context (R : ringType) V of Lalgebra_isComAlgebra R V.
 
 Lemma scalarAr k (x y : V) : k *: (x * y) = x * (k *: y).
 Proof. by rewrite mulrC scalerAl mulrC. Qed.
@@ -2624,8 +2623,7 @@ HB.instance Definition lalgebra_is_algebra : Lalgebra_isAlgebra R V :=
 HB.end.
 
 #[infer(R), short(type="comAlgType")]
-HB.structure Definition ComAlgebra R :=
-  {V of is_ComAlgebra R V & ComRing V & Lalgebra R V}.
+HB.structure Definition ComAlgebra R := {V of ComRing V & Algebra R V}.
 
 Module ComAlgExports.
 Bind Scope ring_scope with ComAlgebra.sort.
@@ -2644,8 +2642,8 @@ HB.instance Definition converse_ : Ring_hasCommutativeMul R^c :=
 HB.instance Definition regular_comRingType : Ring_hasCommutativeMul R^o :=
   ComRing.on R^o.
 #[export]
-HB.instance Definition regular_comAlgType : is_ComAlgebra R R^o :=
-  is_ComAlgebra.Build R R^o.
+HB.instance Definition regular_comAlgType : Lalgebra_isComAlgebra R R^o :=
+  Lalgebra_isComAlgebra.Build R R^o.
 End AlgebraTheory.
 
 Section AlgebraTheory.

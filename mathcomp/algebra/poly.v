@@ -2395,7 +2395,7 @@ Qed.
 
 HB.instance Definition _ := GRing.Ring_hasCommutativeMul.Build (polynomial R)
   poly_mul_comm.
-HB.instance Definition _ := GRing.is_ComAlgebra.Build R (polynomial R).
+HB.instance Definition _ := GRing.Lalgebra_isComAlgebra.Build R (polynomial R).
 HB.instance Definition _ := GRing.ComAlgebra.on {poly R}.
 
 Lemma coef_prod_XsubC (ps : seq R) (n : nat) :
