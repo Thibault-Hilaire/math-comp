@@ -379,7 +379,6 @@ Notation "[ 'splittingFieldType' F 'of' L ]" :=
 End SplittingFieldExports.
 HB.export SplittingFieldExports.
 
-(* FIXME: add factory *)
 Lemma normal_field_splitting (F : fieldType) (L : fieldExtType F) :
   (forall (K : {subfield L}) x,
     exists r, minPoly K x == \prod_(y <- r) ('X - y%:P)) ->
@@ -405,9 +404,19 @@ exists (i, widen_ord (sz_r i) j) => //.
 by rewrite mem_filter /= ltn_ord mem_index_enum.
 Qed.
 
+HB.factory Record FieldExt_isNormalSplittingField
+    (F : fieldType) L of FieldExt F L := {
+  normal_field_splitting_axiom : forall (K : {subfield L}) x,
+    exists r, minPoly K x == \prod_(y <- r) ('X - y%:P)
+}.
+
+HB.builders Context F L of FieldExt_isNormalSplittingField F L.
+HB.instance Definition _ := FieldExt_isSplittingField.Build F L
+  (normal_field_splitting normal_field_splitting_axiom).
+HB.end.
+
 HB.instance Definition _ (F : fieldType) := GRing.Field.on (F^o).
 
-(* FIXME: add factory *)
 Fact regular_splittingAxiom (F : fieldType) :
   SplittingField.axiom [the fieldExtType F of F^o].
 Proof.
