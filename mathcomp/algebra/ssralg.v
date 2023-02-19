@@ -4386,7 +4386,6 @@ HB.mixin Record DecField_isAlgClosed F of DecidableField F := {
   solve_monicpoly : closed_field_axiom [the ringType of F];
 }.
 
-(* TODO: put a factory in field/closed_field *)
 #[mathcomp(axiom="closed_field_axiom"), short(type="closedFieldType")]
 HB.structure Definition ClosedField :=
   { F of DecidableField F & DecField_isAlgClosed F }.

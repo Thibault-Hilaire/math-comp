@@ -649,7 +649,7 @@ Proof. by move=> i bc /= rbc; apply: ex_elim_qf. Qed.
 End ClosedFieldQE.
 End ClosedFieldQE.
 
-HB.mixin Record Field_isAlgClosed F of GRing.Field F := {
+HB.factory Record Field_isAlgClosed F of GRing.Field F := {
   solve_monicpoly : GRing.closed_field_axiom [the ringType of F];
 }.
 
