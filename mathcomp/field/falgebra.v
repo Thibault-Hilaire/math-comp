@@ -150,7 +150,8 @@ HB.instance Definition _ (K : fieldType) n :=
   Algebra_isFalgebra.Build K 'M[K]_n.+1.
 
 HB.instance Definition _ (R : comUnitRingType) := GRing.UnitAlgebra.on R^o.
-(* FIXME: builds a FalgType R R^o, works but couldn't it look nicer? *)
+(* FIXME: remove once https://github.com/math-comp/hierarchy-builder/issues/197
+   is fixed *)
 
 Lemma regular_fullv (K : fieldType) : (fullv = 1 :> {vspace K^o})%VS.
 Proof. by apply/esym/eqP; rewrite eqEdim subvf dim_vline oner_eq0 dimvf. Qed.

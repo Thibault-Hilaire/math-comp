@@ -2025,8 +2025,8 @@ HB.mixin Record isMultiplicative (R S : ringType) (f : R -> S) := {
 #[infer(R,S)]
 HB.structure Definition RMorphism (R S : ringType) :=
   {f of @Additive R S f & isMultiplicative R S f}.
-(* FIXME: Additive has very strange implicit arguments
-   (without @, one would have to write Additive R f) *)
+(* FIXME: remove the @ once
+   https://github.com/math-comp/hierarchy-builder/issues/319 is fixed *)
 
 Module RMorphismExports.
 Module RMorphism.
@@ -2426,7 +2426,8 @@ End LinearTheory.
 HB.structure Definition LRMorphism (R : ringType) (A : lalgType R) (B : ringType)
     (s : R -> B -> B) :=
   {f of @RMorphism A B f & isLinear R A B s f}.
-(* FIXME: strange implicit arguments for RMorphism (just like Additive) *)
+(* FIXME: remove the @ once
+   https://github.com/math-comp/hierarchy-builder/issues/319 is fixed *)
 
 Module LRMorphismExports.
 Module LRMorphism.
