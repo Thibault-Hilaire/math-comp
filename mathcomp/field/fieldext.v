@@ -343,7 +343,7 @@ case: ifP => lti; last by rewrite mulr0 addr0.
 by rewrite linearP mulrA -mulrDl mulr_algl.
 Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build F0 L [the zmodType of {poly L}] _ Fadjoin_poly
+  GRing.isLinear.Build F0 L [the zmodType of {poly L}] _ Fadjoin_poly
     Fadjoin_poly_is_linear.
 
 Lemma size_minPoly : size minPoly = n.+1.
@@ -556,7 +556,7 @@ move=> a p; rewrite -mul_polyC rmorphM /= fieldExt_hornerC.
 by rewrite -scalerAl mul1r.
 Qed.
 HB.instance Definition _ :=
-  GRing.isLinear.Build F0 [the lmodType F0 of {poly F0}] L *:%R fieldExt_horner
+  GRing.isScalable.Build F0 [the lmodType F0 of {poly F0}] L *:%R fieldExt_horner
     fieldExt_hornerZ.
 
 End Horner.
@@ -666,7 +666,7 @@ pose r2v (v : 'rV[K_F]_n) : L_F := \sum_i v 0 i *: (bL`_i : L_F).
 have r2v_lin: linear r2v.
   move=> a u v; rewrite /r2v scaler_sumr -big_split /=; apply: eq_bigr => i _.
   by rewrite scalerA -scalerDl !mxE.
-pose r2vlM := GRing.linear_isLinear.Build _ _ _ _ r2v r2v_lin.
+pose r2vlM := GRing.isLinear.Build _ _ _ _ r2v r2v_lin.
 pose r2vL : GRing.Linear.type _ _ _ _ := HB.pack r2v r2vlM.
 have v2rP x: {r : 'rV[K_F]_n | x = r2v r}.
   apply: sig_eqW; have /memv_sumP[y Fy ->]: x \in SbL by rewrite defL memvf.
@@ -1241,7 +1241,7 @@ HB.instance Definition _ := GRing.Lalgebra_isAlgebra.Build _ subFExtend
 Fact subfx_evalZ : scalable subfx_eval.
 Proof. by move=> a q; rewrite -mul_polyC rmorphM. Qed.
 HB.instance Definition _ :=
-  GRing.isLinear.Build F
+  GRing.isScalable.Build F
     [the lmodType F of {poly F}] [the zmodType of subFExtend] *:%R subfx_eval
     subfx_evalZ.
 
@@ -1397,7 +1397,7 @@ have toLlin: linear toL by move=> a q1 q2; rewrite -linearP -modpZl -modpD.
 have toLmul : multiplicative (toL : {poly F} -> aL).
   by split=> [q r|];
     apply: toPinj; rewrite !toL_K // modp_mul -!(mulrC r) modp_mul.
-pose toLlM := GRing.linear_isLinear.Build _ _ _ _ toL toLlin.
+pose toLlM := GRing.isLinear.Build _ _ _ _ toL toLlin.
 pose toLmM := GRing.isMultiplicative.Build _ _ _ toLmul.
 pose toLLRM : GRing.LRMorphism.type _ _ _ _ :=
   HB.pack (toL : {poly F} -> aL) toLlM toLmM.

@@ -228,7 +228,7 @@ pose nu0aM := GRing.isAdditive.Build Qn Qn nu0 nu0a.
 pose nu0mM := GRing.isMultiplicative.Build Qn Qn nu0 nu0m.
 pose nu0RM : GRing.RMorphism.type _ _ := HB.pack nu0 nu0aM nu0mM.
 pose nu0lM :=
-  GRing.isLinear.Build [ringType of rat] Qn Qn *:%R nu0 (fmorph_numZ nu0RM).
+  GRing.isScalable.Build [ringType of rat] Qn Qn *:%R nu0 (fmorph_numZ nu0RM).
 pose nu0LRM : GRing.LRMorphism.type _ _ _ _ := HB.pack nu0 nu0aM nu0mM nu0lM.
 by exists nu0LRM.
 Qed.
@@ -398,7 +398,7 @@ have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
       by try move=> ? ?; apply: (fmorph_inj QrC); rewrite !rwM.
     pose in01aM := GRing.isAdditive.Build _ _ in01 in01a.
     pose in01mM := GRing.isMultiplicative.Build _ _ in01 in01m.
-    pose in01lM := GRing.isLinear.Build _ _  _ _ in01 in01l.
+    pose in01lM := GRing.isScalable.Build _ _  _ _ in01 in01l.
     pose in01LRM : GRing.LRMorphism.type _ _ _ _ := HB.pack in01
       in01aM in01mM in01lM.
     by exists in01LRM.
@@ -440,7 +440,7 @@ have ext1 mu0 x : {mu1 | exists y, x = Sinj mu1 y
 have phiZ: scalable phi.
   move=> a y; do 2!rewrite -mulr_algl -in_algE; rewrite -[a]divq_num_den.
   by rewrite fmorph_div rmorphM [X in X * _]fmorph_div !rmorph_int.
-pose philM := GRing.isLinear.Build _ _ _ _ phi phiZ.
+pose philM := GRing.isScalable.Build _ _ _ _ phi phiZ.
 pose phiLRM : GRing.LRMorphism.type _ _ _ _ :=
   HB.pack (GRing.RMorphism.sort phi) philM.
 pose fix ext n :=

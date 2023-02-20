@@ -246,7 +246,7 @@ by rewrite !lfunE /= scale_lfunE !lfunE /= mulrDl scalerAl.
 Qed.
 #[hnf]
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build K aT [the zmodType of (hom aT aT)] _ amull
+  GRing.isLinear.Build K aT [the zmodType of (hom aT aT)] _ amull
     amull_is_linear.
 
 (* amull is a converse ring morphism *)
@@ -270,7 +270,7 @@ Qed.
 
 #[hnf]
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build K aT [the zmodType of (hom aT aT)] _ amulr
+  GRing.isLinear.Build K aT [the zmodType of (hom aT aT)] _ amulr
     amulr_is_linear.
 #[hnf]
 HB.instance Definition _ :=

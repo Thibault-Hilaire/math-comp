@@ -355,7 +355,7 @@ Lemma cfAut_scalable : scalable_for (u \; *:%R) cfAut.
 Proof. by move=> a phi; apply/cfunP=> x; rewrite !cfunE rmorphM. Qed.
 
 HB.instance Definition _ :=
-  GRing.isLinear.Build [the ringType of algC]
+  GRing.isScalable.Build [the ringType of algC]
     [the lmodType _ of classfun] [the zmodType of classfun] (u \; *:%R) cfAut
     cfAut_scalable.
 
@@ -850,7 +850,7 @@ by rewrite !cfunE mulrDl -mulrA.
 Qed.
 
 HB.instance Definition _ xi :=
-  GRing.linear_isLinear.Build [the ringType of algC] _ _ _ (cfdotr xi)
+  GRing.isLinear.Build [the ringType of algC] _ _ _ (cfdotr xi)
     (cfdotr_is_linear xi).
 
 Lemma cfdot0l xi : '[0, xi] = 0.
@@ -1398,8 +1398,7 @@ Proof.
 by move=> a phi psi; apply/cfunP=> x; rewrite !cfunElock mulrnAr mulrnDl.
 Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build [the ringType of algC] _ _ _ cfRes
-    cfRes_is_linear.
+  GRing.isLinear.Build [the ringType of algC] _ _ _ cfRes cfRes_is_linear.
 
 Lemma cfRes_cfun1 : cfRes 1 = 1.
 Proof.
@@ -1508,7 +1507,7 @@ Proof.
 by move=> a phi psi; apply/cfunP=> x; rewrite !cfunElock mulrnAr -mulrnDl.
 Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build [the ringType of algC] _ _ _ cfMorph
+  GRing.isLinear.Build [the ringType of algC] _ _ _ cfMorph
     cfMorph_is_linear.
 
 Fact cfMorph_is_multiplicative : multiplicative cfMorph.
@@ -1610,7 +1609,7 @@ Proof. rewrite unlock; exact: linearZ_LR. Qed.
 HB.instance Definition _ := GRing.isAdditive.Build _ _ cfIsom cfIsom_is_additive.
 HB.instance Definition _ := GRing.isMultiplicative.Build _ _ cfIsom
   cfIsom_is_multiplicative.
-HB.instance Definition _ := GRing.isLinear.Build _ _ _ _ cfIsom
+HB.instance Definition _ := GRing.isScalable.Build _ _ _ _ cfIsom
   cfIsom_is_scalable.
 
 Lemma cfIsom_cfun1 : cfIsom 1 = 1. Proof. exact: rmorph1. Qed.
@@ -1865,7 +1864,7 @@ Proof. rewrite unlock; exact: linearZ_LR. Qed.
 HB.instance Definition _ := GRing.isAdditive.Build _ _ cfSdprod cfSdprod_is_additive.
 HB.instance Definition _ := GRing.isMultiplicative.Build _ _ cfSdprod
   cfSdprod_is_multiplicative.
-HB.instance Definition _ := GRing.isLinear.Build _ _ _ _ cfSdprod
+HB.instance Definition _ := GRing.isScalable.Build _ _ _ _ cfSdprod
   cfSdprod_is_scalable.
 
 Lemma cfSdprod1 phi : cfSdprod phi 1%g = phi 1%g.
@@ -2237,7 +2236,7 @@ rewrite mulrnAr -mulrnDl !(mulrCA c) -!mulrDr [c * _]mulr_sumr -big_split /=.
 by congr (_ * (_ * _) *+ _); apply: eq_bigr => y; rewrite !cfunE mulrA mulrDl.
 Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build [the ringType of algC] _ _ _ cfInd
+  GRing.isLinear.Build [the ringType of algC] _ _ _ cfInd
     cfInd_is_linear.
 
 End Def.

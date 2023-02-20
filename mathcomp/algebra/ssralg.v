@@ -2522,7 +2522,7 @@ Definition scalable_for (R : ringType) (U : lmodType R) (V : zmodType)
     (s : R -> V -> V) (f : U -> V) :=
   forall a, {morph f : u / a *: u >-> s a u}.
 
-HB.mixin Record isLinear (R : ringType) (U : lmodType R) (V : zmodType)
+HB.mixin Record isScalable (R : ringType) (U : lmodType R) (V : zmodType)
     (s : R -> V -> V) (f : U -> V) := {
   linear_subproof : scalable_for s f;
 }.
@@ -2530,16 +2530,11 @@ HB.mixin Record isLinear (R : ringType) (U : lmodType R) (V : zmodType)
 #[infer(R,U,V)]
 HB.structure Definition Linear (R : ringType) (U : lmodType R) (V : zmodType)
     (s : R -> V -> V) :=
-  {f of @Additive U V f & isLinear R U V s f}.
+  {f of @Additive U V f & isScalable R U V s f}.
 
 Definition linear_for (R : ringType) (U : lmodType R) (V : zmodType)
     (s : R -> V -> V) (f : U -> V) :=
   forall a, {morph f : u v / a *: u + v >-> s a u + v}.
-
-HB.factory Record linear_isLinear (R : ringType) (U : lmodType R) (V : zmodType)
-    (s : Scale.law R V) (f : U -> V) := {
-  linear_subproof : linear_for s f;
-}.
 
 Lemma additive_linear (R : ringType) (U : lmodType R) V
   (s : Scale.law R V) (f : U -> V) : linear_for s f -> additive f.
@@ -2551,10 +2546,14 @@ Proof.
 by move=> Lsf a v; rewrite -[a *:v](addrK v) (additive_linear Lsf) Lsf addrK.
 Qed.
 
-HB.builders Context R U V s f of linear_isLinear R U V s f.
+HB.factory Record isLinear (R : ringType) (U : lmodType R) (V : zmodType)
+    (s : Scale.law R V) (f : U -> V) := {
+  linear_subproof : linear_for s f;
+}.
+HB.builders Context R U V s f of isLinear R U V s f.
 HB.instance Definition _ := isAdditive.Build U V f
   (additive_linear linear_subproof).
-HB.instance Definition _ := isLinear.Build R U V s f
+HB.instance Definition _ := isScalable.Build R U V s f
   (scalable_linear linear_subproof).
 HB.end.
 
@@ -2697,17 +2696,17 @@ Variables (f : {linear U -> V | s}) (h : {linear W -> U}).
 
 Lemma idfun_is_scalable : scalable (@idfun U). Proof. by []. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U U *:%R idfun idfun_is_scalable.
+HB.instance Definition _ := isScalable.Build R U U *:%R idfun idfun_is_scalable.
 
 Lemma opp_is_scalable : scalable (-%R : U -> U).
 Proof. by move=> a v /=; rewrite scalerN. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U U *:%R -%R opp_is_scalable.
+HB.instance Definition _ := isScalable.Build R U U *:%R -%R opp_is_scalable.
 
 Lemma comp_is_scalable : scalable_for s (f \o h).
 Proof. by move=> a v /=; rewrite !linearZ_LR. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R W V s (f \o h) comp_is_scalable.
+HB.instance Definition _ := isScalable.Build R W V s (f \o h) comp_is_scalable.
 
 End Plain.
 
@@ -2719,22 +2718,22 @@ Variables (f : {linear U -> V | s}) (g : {linear U -> V | s}).
 Lemma null_fun_is_scalable : scalable_for s (\0 : U -> V).
 Proof. by move=> a v /=; rewrite raddf0. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U V s \0 null_fun_is_scalable.
+HB.instance Definition _ := isScalable.Build R U V s \0 null_fun_is_scalable.
 
 Lemma add_fun_is_scalable : scalable_for s (f \+ g).
 Proof. by move=> a u; rewrite /= !linearZ_LR raddfD. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U V s (f \+ g) add_fun_is_scalable.
+HB.instance Definition _ := isScalable.Build R U V s (f \+ g) add_fun_is_scalable.
 
 Lemma sub_fun_is_scalable : scalable_for s (f \- g).
 Proof. by move=> a u; rewrite /= !linearZ_LR raddfB. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U V s (f \- g) sub_fun_is_scalable.
+HB.instance Definition _ := isScalable.Build R U V s (f \- g) sub_fun_is_scalable.
 
 Lemma opp_fun_is_scalable : scalable_for s (\- g).
 Proof. by move=> a u; rewrite /= linearZ_LR raddfN. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U V s (\- g) opp_fun_is_scalable.
+HB.instance Definition _ := isScalable.Build R U V s (\- g) opp_fun_is_scalable.
 
 End Scale.
 
@@ -2749,7 +2748,7 @@ Variables (a : A) (f : {linear U -> A}).
 Fact mulr_fun_is_scalable : scalable (a \o* f).
 Proof. by move=> k x /=; rewrite linearZ scalerAl. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U A *:%R (a \o* f)
+HB.instance Definition _ := isScalable.Build R U A *:%R (a \o* f)
   mulr_fun_is_scalable.
 
 End LinearLalg.
@@ -2759,7 +2758,7 @@ End LinearTheory.
 #[infer(R,A,B)]
 HB.structure Definition LRMorphism (R : ringType) (A : lalgType R) (B : ringType)
     (s : R -> B -> B) :=
-  {f of @RMorphism A B f & isLinear R A B s f}.
+  {f of @RMorphism A B f & isScalable R A B s f}.
 (* FIXME: remove the @ once
    https://github.com/math-comp/hierarchy-builder/issues/319 is fixed *)
 
@@ -2962,13 +2961,13 @@ Variables (U V : lmodType R) (b : R) (f : {linear U -> V}).
 Lemma scale_is_scalable : scalable ( *:%R b : V -> V).
 Proof. by move=> a v /=; rewrite !scalerA mulrC. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R V V *:%R ( *:%R b)
+HB.instance Definition _ := isScalable.Build R V V *:%R ( *:%R b)
   scale_is_scalable.
 
 Lemma scale_fun_is_scalable : scalable (b \*: f).
 Proof. by move=> a v /=; rewrite !linearZ. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U V *:%R (b \*: f)
+HB.instance Definition _ := isScalable.Build R U V *:%R (b \*: f)
   scale_fun_is_scalable.
 
 End ScaleLinear.
@@ -3069,7 +3068,7 @@ Variables (U : lmodType R) (a : A) (f : {linear U -> A}).
 Lemma mull_fun_is_scalable : scalable (a \*o f).
 Proof. by move=> k x /=; rewrite linearZ scalerAr. Qed.
 #[export]
-HB.instance Definition _ := isLinear.Build R U A *:%R (a \*o f)
+HB.instance Definition _ := isScalable.Build R U A *:%R (a \*o f)
   mull_fun_is_scalable.
 
 End AlgebraTheory.
@@ -5486,7 +5485,7 @@ Section linear.
 Context (R : ringType) (V : lmodType R) (S : pred V) (W : SubLmodule.type S).
 Notation val := (val : W -> V).
 #[export]
-HB.instance Definition _ := isLinear.Build R W V *:%R val valZ.
+HB.instance Definition _ := isScalable.Build R W V *:%R val valZ.
 End linear.
 
 HB.factory Record SubZmodule_isSubLmodule (R : ringType) (V : lmodType R) S W
@@ -6738,12 +6737,12 @@ HB.instance Definition _ := Zmodule_isLmodule.Build R (V1 * V2)%type
 Fact fst_is_scalable : scalable fst. Proof. by []. Qed.
 #[export]
 HB.instance Definition _ :=
-  isLinear.Build R [the lmodType R of (V1 * V2)%type] V1 *:%R fst
+  isScalable.Build R [the lmodType R of (V1 * V2)%type] V1 *:%R fst
     fst_is_scalable.
 Fact snd_is_scalable : scalable snd. Proof. by []. Qed.
 #[export]
 HB.instance Definition _ :=
-  isLinear.Build R [the lmodType R of (V1 * V2)%type] V2 *:%R snd
+  isScalable.Build R [the lmodType R of (V1 * V2)%type] V2 *:%R snd
     snd_is_scalable.
 
 End PairLmod.

@@ -151,7 +151,7 @@ Qed.
 Lemma poly_rV_is_linear : linear poly_rV.
 Proof. by move=> a p q; apply/rowP=> i; rewrite !mxE coefD coefZ. Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build R
+  GRing.isLinear.Build R
     [lmodType R of {poly R}] [zmodType of 'rV_d] _ poly_rV
     poly_rV_is_linear.
 
@@ -161,7 +161,7 @@ move=> a u v; apply/polyP=> k; rewrite coefD coefZ !coef_rVpoly.
 by case: insubP => [i _ _ | _]; rewrite ?mxE // mulr0 addr0.
 Qed.
 HB.instance Definition _ :=
-  GRing.linear_isLinear.Build R
+  GRing.isLinear.Build R
     [the lmodType R of 'rV_d] [the zmodType of {poly R}] _ rVpoly
     rVpoly_is_linear.
 
@@ -339,7 +339,7 @@ move=> a p /=; rewrite -mul_polyC rmorphM /=.
 by rewrite horner_mx_C [_ * _]mul_scalar_mx.
 Qed.
 
-HB.instance Definition _ := GRing.isLinear.Build R _ _ *:%R horner_mx
+HB.instance Definition _ := GRing.isScalable.Build R _ _ *:%R horner_mx
   horner_mxZ.
 
 Definition powers_mx d := \matrix_(i < d) mxvec (A ^+ i).

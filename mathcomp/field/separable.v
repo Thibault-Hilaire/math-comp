@@ -456,23 +456,13 @@ Variable D : 'End(L).
 
 Let Dx E := - (map_poly D (minPoly E x)).[x] / ((minPoly E x)^`()).[x].
 
-Fact extendDerivation_semi_additive_subproof E (adjEx := Fadjoin_poly E x) :
+Fact extendDerivation_additive_subproof E (adjEx := Fadjoin_poly E x) :
   let body y (p := adjEx y) := (map_poly D p).[x] + p^`().[x] * Dx E in
-  semi_additive body.
+  additive body.
 Proof.
-move: Dx => C /=; split=> [|u v]; rewrite /adjEx.
-  by rewrite raddf0 deriv0 !hornerE raddf0 hornerE.
-rewrite raddfD /= derivD -/adjEx !hornerE /= raddfD /= !hornerE.
-by rewrite mulrDl addrACA addrA.
-Qed.
-
-Fact extendDerivation_opp_subproof E (adjEx := Fadjoin_poly E x) :
-  let body y (p := adjEx y) := (map_poly D p).[x] + p^`().[x] * Dx E in
-  {morph body : x / - x}.
-Proof.
-move: Dx => C /= u.
-rewrite /adjEx raddfN /= derivN -/adjEx !hornerE /= raddfN /= !hornerE.
-by rewrite opprD mulNr.
+move: Dx => C /= u v; rewrite /adjEx.
+rewrite raddfB /= derivB -/adjEx !hornerE /= raddfB /= !hornerE.
+by rewrite mulrBl addrACA opprD.
 Qed.
 
 Fact extendDerivation_scalable_subproof E (adjEx := Fadjoin_poly E x) :
@@ -488,16 +478,17 @@ have ->: map_poly D (a%:A%:P * adjEx u) = a%:A%:P * map_poly D (adjEx u).
 by rewrite !hornerE !mulr_algl -scalerAl.
 Qed.
 
-Definition extendDerivation (E : {subfield L}) : 'End(L) :=
-  linfun
-    (GRing.Linear.Pack
-       (GRing.Linear.Class
-          (GRing.isSemiAdditive.Build L L _
-             (extendDerivation_semi_additive_subproof E))
-          (GRing.SemiAdditive_isAdditive.Build L L _
-             (extendDerivation_opp_subproof E))
-          (GRing.isLinear.Build F L L *:%R _
-             (extendDerivation_scalable_subproof E)))).
+Section DerivationLinear.
+Variable (E : {subfield L}).
+Let body (y : L) (p := Fadjoin_poly E x y) : L :=
+  (map_poly D p).[x] + p^`().[x] * Dx E.
+HB.instance Definition _ := @GRing.isAdditive.Build _ _ body
+  (extendDerivation_additive_subproof E).
+HB.instance Definition _ := @GRing.isScalable.Build _ _ _ _ body
+  (extendDerivation_scalable_subproof E).
+Let extendDerivationLinear := Eval hnf in [the {linear _ -> _} of body].
+Definition extendDerivation : 'End(L) := linfun extendDerivationLinear.
+End DerivationLinear.
 
 Hypothesis derD : Derivation K D.
 
@@ -553,7 +544,7 @@ pose Df := fun y => (Fadjoin_poly K x y)^`().[x].
 have Dlin: linear Df.
   move=> a u v; rewrite /Df linearP /= -mul_polyC derivD derivM derivC.
   by rewrite mul0r add0r hornerD hornerM hornerC -scalerAl mul1r.
-pose DlinM := GRing.linear_isLinear.Build _ _ _ _ Df Dlin.
+pose DlinM := GRing.isLinear.Build _ _ _ _ Df Dlin.
 pose DL : GRing.Linear.type _ _ _ _ := HB.pack Df DlinM.
 pose D := linfun DL; apply: base_separable.
 have DK_0: (K <= lker D)%VS.

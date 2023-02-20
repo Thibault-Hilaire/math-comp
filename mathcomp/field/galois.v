@@ -150,28 +150,28 @@ rewrite memv_cap memv0 memv_ker => /andP[Ev]; apply: contraLR => nz_v.
 by rewrite -unitfE unitrE -(kHom_inv homKf) // -fM ?rpredV ?divff ?idKf ?mem1v.
 Qed.
 
-Lemma kHom_is_semi_additive K E f :
-  kHom K E f -> semi_additive (f \o vsval : subvs_of E -> L).
-Proof. case/kHomP => fM idKf; split; [exact: raddf0 | exact: raddfD]. Qed.
+Section kHomMorphism.
+Variables (K E : {subfield L}) (f : 'End(L)).
+Let kHomf : subvs_of E -> L := f \o vsval.
 
-Lemma kHom_is_additive K E f :
-  kHom K E f -> {morph (f \o vsval : subvs_of E -> L) : x / - x }.
-Proof. case/kHomP => fM idKf; exact: raddfN. Qed.
+Lemma kHom_is_additive : kHom K E f -> additive kHomf.
+Proof. by case/kHomP => fM idKf; apply: raddfB. Qed.
 
-Lemma kHom_is_multiplicative K E f :
-  kHom K E f -> multiplicative (f \o vsval : subvs_of E -> L).
+Lemma kHom_is_multiplicative : kHom K E f -> multiplicative kHomf.
 Proof.
-case/kHomP=> fM idKf.
+case/kHomP=> fM idKf; rewrite /kHomf.
 by split=> [a b|] /=; [rewrite /= fM ?subvsP | rewrite algid1 idKf // mem1v].
 Qed.
 
-Definition kHom_rmorphism K E f homKEf :=
-  GRing.RMorphism.Pack
-    (GRing.RMorphism.Class
-       (GRing.isSemiAdditive.Build _ _ _ (@kHom_is_semi_additive K E f homKEf))
-       (GRing.SemiAdditive_isAdditive.Build _ _ _ (@kHom_is_additive K E f homKEf))
-       (GRing.isMultiplicative.Build _ _ _
-          (@kHom_is_multiplicative K E f homKEf))).
+Variable (homKEf : kHom K E f).
+HB.instance Definition _ :=
+  @GRing.isAdditive.Build _ _ kHomf (kHom_is_additive homKEf).
+HB.instance Definition _ :=
+  @GRing.isMultiplicative.Build _ _ kHomf (kHom_is_multiplicative homKEf).
+
+Definition kHom_rmorphism := Eval hnf in [the {rmorphism _ -> _} of kHomf].
+
+End kHomMorphism.
 
 Lemma kHom_horner K E f p x :
   kHom K E f -> p \is a polyOver E -> x \in E -> f p.[x] = (map_poly f p).[f x].
@@ -199,29 +199,23 @@ Section kHomExtend.
 
 Variables (K E : {subfield L}) (f : 'End(L)) (x y : L).
 
-Fact kHomExtend_semi_additive_subproof :
-  semi_additive (fun z => (map_poly f (Fadjoin_poly E x z)).[y]).
-Proof. by split=> [|a b]; rewrite ?raddf0 ?horner0// !raddfD hornerD. Qed.
+Let kHomf z := (map_poly f (Fadjoin_poly E x z)).[y].
 
-Fact kHomExtend_opp_subproof :
-  {morph (fun z => (map_poly f (Fadjoin_poly E x z)).[y]) : x / - x}.
-Proof. by move=> a; rewrite !raddfN hornerN. Qed.
+Fact kHomExtend_additive_subproof : additive kHomf.
+Proof. by move=> a b; rewrite /kHomf !raddfB hornerD hornerN. Qed.
 
-Fact kHomExtend_scalable_subproof :
-  scalable (fun z => (map_poly f (Fadjoin_poly E x z)).[y]).
+Fact kHomExtend_scalable_subproof : scalable kHomf.
 Proof.
-move=> k a; rewrite !linearZ /=.
+move=> k a; rewrite /kHomf !linearZ /=.
 rewrite -[rhs in _ = rhs]mulr_algl -hornerZ; congr _.[_].
 by apply/polyP => i; rewrite !(coefZ, coef_map) /= !mulr_algl linearZ.
 Qed.
-
-Definition kHomExtend :=
-  linfun
-    (GRing.Linear.Pack
-       (GRing.Linear.Class
-          (GRing.isSemiAdditive.Build _ _ _ kHomExtend_semi_additive_subproof)
-          (GRing.SemiAdditive_isAdditive.Build _ _ _ kHomExtend_opp_subproof)
-          (GRing.isLinear.Build _ _ _ _ _ kHomExtend_scalable_subproof))).
+HB.instance Definition _ := @GRing.isAdditive.Build _ _ kHomf
+  kHomExtend_additive_subproof.
+HB.instance Definition _ := @GRing.isScalable.Build _ _ _ _ kHomf
+  kHomExtend_scalable_subproof.
+Let kHomExtendLinear := Eval hnf in [the {linear _ -> _} of kHomf].
+Definition kHomExtend := linfun kHomExtendLinear.
 
 Lemma kHomExtendE z : kHomExtend z = (map_poly f (Fadjoin_poly E x z)).[y].
 Proof. by rewrite lfunE. Qed.
@@ -563,7 +557,7 @@ have{irr_q} [Lz [inLz [z qz0]]]: {Lz : fieldExtType F &
   have inLzL_linear: linear (locked inLz).
     move=> a u v; rewrite -(@mulr_algl F Lz) baseField_scaleE.
     by rewrite -{1}mulr_algl rmorphD rmorphM -lock.
-  pose inLzLlM := GRing.linear_isLinear.Build _ _ _ _ _ inLzL_linear.
+  pose inLzLlM := GRing.isLinear.Build _ _ _ _ _ inLzL_linear.
   pose inLzLL : GRing.Linear.type _ _ _ _ :=
     HB.pack (locked inLz : _ -> _) inLzLlM.
   have ihLzZ: ahom_in {:L} (linfun inLzLL).

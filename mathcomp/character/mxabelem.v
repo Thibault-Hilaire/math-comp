@@ -594,7 +594,7 @@ rewrite rVabelemD rVabelemZ conjMg conjXg.
 by rewrite abelem_rV_M ?abelem_rV_X ?groupX ?memJ_norm // natr_Zp.
 Qed.
 HB.instance Definition _ (g : [subg G]) :=
-  GRing.linear_isLinear.Build [the ringType of 'F_p]
+  GRing.isLinear.Build [the ringType of 'F_p]
     [the lmodType _ of rVn] [the zmodType of rVn] _ (abelem_mx_fun g)
     (abelem_mx_linear_proof g).
 

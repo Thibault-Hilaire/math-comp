@@ -337,7 +337,7 @@ have QtoQ z x: x \in sQ z -> {Qxz : 'AHom(Q x, Q z) | morph_ofQ x z Qxz}.
       rewrite ?rmorph1 ?rmorphM /= ?QxzE.
   have QxzaM := GRing.isAdditive.Build _ _ _ Qxza.
   have QxzmM := GRing.isMultiplicative.Build _ _ _ Qxzm.
-  have QxzlM := GRing.isLinear.Build _ _ _ _ _ (rat_linear Qxza).
+  have QxzlM := GRing.isScalable.Build _ _ _ _ _ (rat_linear Qxza).
   pose QxzLRM : GRing.LRMorphism.type _ _ _ _ := HB.pack Qxz QxzaM QxzmM QxzlM.
   by exists (linfun_ahom QxzLRM) => u; rewrite lfunE QxzE.
 pose sQs z s := all (mem (sQ z)) s.
