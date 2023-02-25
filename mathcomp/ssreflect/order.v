@@ -7916,6 +7916,8 @@ Export TLatticeMorphismTheory.
 
 Export ClosedPredicates.
 Export LatticePred.
+
+Export SubPOrderTheory.
 End LTheory.
 
 Module CTheory.
