@@ -5316,8 +5316,7 @@ Next Obligation. by move=> x y z; apply: val_inj; rewrite !subK joinA. Qed.
 Next Obligation. by move=> y x; apply: val_inj; rewrite !subK joinKI. Qed.
 Next Obligation. by move=> y x; apply: val_inj; rewrite !subK meetKU. Qed.
 Next Obligation.
-move=> x y.
-by rewrite -(omorph_le [omorphism of val]) -(inj_eq val_inj) subK leEmeet.
+by move=> x y; rewrite leEsub -(inj_eq val_inj) subK leEmeet.
 Qed.
 HB.instance Definition _ := latticeU.
 
@@ -5369,8 +5368,7 @@ HB.builders Context d T S d' U of SubPOrder_isBSubLattice d T S d' U.
 Let inU v Sv : U := eqtype.sub v Sv.
 Let zeroU : U := inU opred0_subproof.
 
-Fact le0x x : zeroU <= x.
-Proof. by rewrite -(omorph_le [omorphism of val]) /= subK le0x. Qed.
+Fact le0x x : zeroU <= x. Proof. by rewrite leEsub /= subK le0x. Qed.
 HB.instance Definition _ := hasBottom.Build d' U le0x.
 
 Fact val0 : (val : U -> T) 0 = 0. Proof. by rewrite subK. Qed.
@@ -5419,8 +5417,7 @@ HB.builders Context d T S d' U of SubPOrder_isTSubLattice d T S d' U.
 Let inU v Sv : U := eqtype.sub v Sv.
 Let oneU : U := inU opred1_subproof.
 
-Fact lex1 x : x <= oneU.
-Proof. by rewrite -(omorph_le [omorphism of val]) /= subK lex1. Qed.
+Fact lex1 x : x <= oneU. Proof. by rewrite leEsub /= subK lex1. Qed.
 HB.instance Definition _ := hasTop.Build d' U lex1.
 
 Fact val1 : (val : U -> T) 1 = 1. Proof. by rewrite subK. Qed.
@@ -5486,7 +5483,7 @@ HB.factory Record SubLattice_isSubOrder d (T : orderType d) S d' U
 
 HB.builders Context d T S d' U of SubLattice_isSubOrder d T S d' U.
 Lemma totalU : total (<=%O : rel U).
-Proof. by move=> x y; rewrite -!(omorph_le [omorphism of val]) le_total. Qed.
+Proof. by move=> x y; rewrite !leEsub le_total. Qed.
 HB.instance Definition _ := Lattice_isTotal.Build d' U totalU.
 HB.end.
 
