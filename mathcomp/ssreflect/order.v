@@ -7213,9 +7213,9 @@ End Basics.
 Section POrder.
 Implicit Types (T : porderType disp).
 
-#[export] HB.instance Definition _ n T := [POrder of n.-tuple T by <:].
-(* FIXME should use [SubChoice_isSubPOrder of n.-tuple T by <: with disp']
-   but there seems to be a bug, maybe in HB *)
+#[export] HB.instance Definition _ n T := SubChoice.on (n.-tuple T).
+#[export] HB.instance Definition _ n T :=
+  [SubChoice_isSubPOrder of n.-tuple T by <: with disp'].
 
 Lemma leEtprod n T (t1 t2 : n.-tuple T) :
    t1 <= t2 = [forall i, tnth t1 i <= tnth t2 i].
@@ -7509,7 +7509,9 @@ End Basics.
 Section POrder.
 Implicit Types (T : porderType disp).
 
-#[export] HB.instance Definition _ n T := [POrder of n.-tuple T by <:].
+#[export] HB.instance Definition _ n T := SubChoice.on (n.-tuple T).
+#[export] HB.instance Definition _ n T :=
+  [SubChoice_isSubPOrder of n.-tuple T by <: with disp'].
 
 Lemma lexi_tupleP n T (t1 t2 : n.-tuple T) :
    reflect (exists k : 'I_n.+1, forall i : 'I_n, (i <= k)%N ->
@@ -7572,11 +7574,10 @@ HB.instance Definition _ (n : nat) (T : finPOrderType disp) :=
   POrder.on (n.-tuple T).
 (* /FIXME *)
 
-#[export]
-HB.instance Definition _ (n : nat) (T : orderType disp) :=
-  [Order of n.-tuple T by <:].
-(* FIXME should use [SubChoice_isSubOrder of n.-tuple T by <: with disp']
-   but there seems to be a bug, maybe in HB *)
+#[export] HB.instance Definition _ n (T : orderType disp) :=
+  SubChoice.on (n.-tuple T).
+#[export] HB.instance Definition _ n (T : orderType disp) :=
+  [SubChoice_isSubOrder of n.-tuple T by <: with disp'].
 
 Section BDistrLattice.
 Variables (n : nat) (T : finOrderType disp).
