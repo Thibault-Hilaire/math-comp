@@ -698,7 +698,7 @@ have /all_sig[n_ FTA] z: {n | z \in sQ (z_ n)}.
   have [sRCn sCnRz]: (Rn <= Cn)%VS /\ (Cn <= Rz)%VS by rewrite !subv_adjoin.
   have sRnRz := subv_trans sRCn sCnRz.
   have{gal_z} galRz: galois Rn Rz.
-    apply/and3P; split=> //; first by apply: sepQ.
+    apply/and3P; split; [by []|by apply: sepQ|].
     apply/splitting_normalField=> //.
     pose QzMixin := FieldExt_isSplittingField.Build _ (Q z) gal_z.
     pose Qz : splittingFieldType _ := HB.pack (Q z) QzMixin.
