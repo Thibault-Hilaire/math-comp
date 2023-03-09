@@ -23,7 +23,7 @@ with builtins; with (import <nixpkgs> {}).lib;
 
   ## select an entry to build in the following `bundles` set
   ## defaults to "default"
-  default-bundle = "coq-8.15";
+  default-bundle = "coq-8.16";
 
   ## write one `bundles.name` attribute set per
   ## alternative configuration, the can be used to
@@ -82,16 +82,9 @@ with builtins; with (import <nixpkgs> {}).lib;
     };
     "coq-8.17".coqPackages = common-bundles // {
       coq.override.version = "8.17";
-      coqeal.job = false;
-      mathcomp-classical.job = false;
-      mathcomp-analysis.job = false;
-      graph-theory.job = false;
     };
     "coq-8.16".coqPackages = common-bundles // {
       coq.override.version = "8.16";
-    };
-    "coq-8.15".coqPackages = common-bundles // {
-      coq.override.version = "8.15";
     };
   };
 }
